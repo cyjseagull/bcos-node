@@ -62,12 +62,16 @@ void Initializer::init(std::string const& _configFilePath, std::string const& _g
             m_protocolInitializer->blockFactory(), storageInitializer->storage(), m_nodeConfig);
 
         // init the dispatcher(TODO: modify the dispatcher to the real dispatcher)
-        auto dispatcher = std::make_shared<bcos::test::FakeDispatcher>();
+        auto dispatcher = std::make_shared<bcos::test::FakeDispatcher>(
+            m_ledgerInitializer->ledger(), storageInitializer->storage(),
+            m_protocolInitializer->cryptoSuite(), m_protocolInitializer->blockFactory());
 
         // init the pbft related modules
         m_pbftInitializer = std::make_shared<PBFTInitializer>();
         m_pbftInitializer->init(m_nodeConfig, m_protocolInitializer, m_networkInitializer,
             m_ledgerInitializer->ledger(), dispatcher, storageInitializer->storage());
+
+        dispatcher->setTxPool(m_pbftInitializer->txpool());
     }
     catch (std::exception const& e)
     {

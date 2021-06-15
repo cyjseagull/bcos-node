@@ -172,8 +172,8 @@ BlockSyncFactory::Ptr PBFTInitializer::createSync(NodeConfig::Ptr,
     // create sync
     auto keyPair = _protocolInitializer->keyPair();
     auto blockSyncFactory = std::make_shared<BlockSyncFactory>(keyPair->publicKey(),
-        _protocolInitializer->blockFactory(), _ledger, _networkInitializer->frontService(),
-        _dispatcher, m_pbft);
+        _protocolInitializer->blockFactory(), _protocolInitializer->txResultFactory(), _ledger,
+        m_txpool, _networkInitializer->frontService(), _dispatcher, m_pbft);
     m_blockSync = blockSyncFactory->sync();
 
     // register block sync message handler

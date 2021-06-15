@@ -79,8 +79,9 @@ inline NodeObjects::Ptr createNode(CryptoSuite::Ptr _cryptoSuite, BlockFactory::
         txResultFactory);
 
     // create sync
-    auto blockSyncFactory = std::make_shared<BlockSyncFactory>(keyPair->publicKey(), _blockFactory,
-        ledger, frontService, dispatcher, pbftFactory->consensus());
+    auto blockSyncFactory =
+        std::make_shared<BlockSyncFactory>(keyPair->publicKey(), _blockFactory, txResultFactory,
+            ledger, txpoolFactory->txpool(), frontService, dispatcher, pbftFactory->consensus());
     if (_connected)
     {
         _gateWay->addConsensusInterface(keyPair->publicKey(), pbftFactory->consensus());

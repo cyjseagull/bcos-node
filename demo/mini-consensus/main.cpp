@@ -47,17 +47,21 @@ inline void createAndSubmitTx(Initializer::Ptr _initializer, float txSpeed)
         blockNumber = _blockNumber;
     });
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    size_t txsNum = 0;
     while (true)
     {
         try
         {
-            ledger->asyncGetBlockNumber([&](Error::Ptr _error, BlockNumber _blockNumber) {
-                if (_error)
-                {
-                    return;
-                }
-                blockNumber = _blockNumber;
-            });
+            if (txsNum % 500 == 0)
+            {
+                ledger->asyncGetBlockNumber([&](Error::Ptr _error, BlockNumber _blockNumber) {
+                    if (_error)
+                    {
+                        return;
+                    }
+                    blockNumber = _blockNumber;
+                });
+            }
             int64_t txBlockLimit = blockNumber + blockLimit;
             auto tx =
                 bcos::test::fakeTransaction(cryptoSuite, nonce, txBlockLimit, chainId, groupId);
@@ -68,12 +72,12 @@ inline void createAndSubmitTx(Initializer::Ptr _initializer, float txSpeed)
                 [tx](Error::Ptr _error, TransactionSubmitResult::Ptr _result) {
                     if (_error == nullptr)
                     {
-                        LOG(DEBUG) << LOG_DESC("submit transaction success")
+                        LOG(TRACE) << LOG_DESC("submit transaction success")
                                    << LOG_KV("hash", tx->hash().abridged())
                                    << LOG_KV("status", _result->status());
                         return;
                     }
-                    LOG(DEBUG) << LOG_DESC("submit transaction failed")
+                    LOG(TRACE) << LOG_DESC("submit transaction failed")
                                << LOG_KV("code", _error->errorCode())
                                << LOG_KV("msg", _error->errorMessage());
                 },
@@ -87,6 +91,7 @@ inline void createAndSubmitTx(Initializer::Ptr _initializer, float txSpeed)
                                << LOG_KV("msg", _error->errorMessage());
                 });
             nonce = utcTime() + tx->nonce();
+            txsNum++;
         }
         catch (std::exception const& e)
         {
