@@ -754,8 +754,8 @@ generate_genesis_config()
     consensus_type=pbft
     ; the max number of transactions of a block
     block_tx_count_limit=1000
-    ; in seconds, block consensus timeout, at least 3s
-    consensus_timeout=3
+    ; in seconds, block consensus timeout, at least 3000ms
+    consensus_timeout=3000
     ; the node id of consensusers
     ${node_list}
 

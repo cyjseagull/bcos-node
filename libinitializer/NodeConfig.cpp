@@ -147,7 +147,7 @@ void NodeConfig::loadLedgerConfig(boost::property_tree::ptree const& _genesisCon
     m_ledgerConfig->setBlockTxCountLimit(blockTxCountLimit);
 
     // consensusTimeout
-    auto consensusTimeout = _genesisConfig.get<size_t>("consensus.consensus_timeout", 3);
+    auto consensusTimeout = _genesisConfig.get<size_t>("consensus.consensus_timeout", 3000);
     if (consensusTimeout < SYSTEM_CONSENSUS_TIMEOUT_MIN ||
         consensusTimeout > SYSTEM_CONSENSUS_TIMEOUT_MAX)
     {
@@ -156,7 +156,7 @@ void NodeConfig::loadLedgerConfig(boost::property_tree::ptree const& _genesisCon
                                   std::to_string(SYSTEM_CONSENSUS_TIMEOUT_MIN) + " and " +
                                   std::to_string(SYSTEM_CONSENSUS_TIMEOUT_MAX) + " !"));
     }
-    m_ledgerConfig->setConsensusTimeout(consensusTimeout * 1000);
+    m_ledgerConfig->setConsensusTimeout(consensusTimeout);
 
     // txGasLimit
     m_txGasLimit = _genesisConfig.get<size_t>("tx.gas_limit", 300000000);
