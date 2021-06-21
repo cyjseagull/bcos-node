@@ -63,8 +63,19 @@ inline void createAndSubmitTx(Initializer::Ptr _initializer, float txSpeed)
                 });
             }
             int64_t txBlockLimit = blockNumber + blockLimit;
-            auto tx =
-                bcos::test::fakeTransaction(cryptoSuite, nonce, txBlockLimit, chainId, groupId);
+            Transaction::Ptr tx;
+            // fake the system transactions
+            if (txsNum % 10000 == 0)
+            {
+                std::string to = "0x1003";
+                tx = bcos::test::fakeTransaction(cryptoSuite, nonce, txBlockLimit, chainId, groupId,
+                    bytes(to.begin(), to.end()));
+            }
+            else
+            {
+                tx =
+                    bcos::test::fakeTransaction(cryptoSuite, nonce, txBlockLimit, chainId, groupId);
+            }
             auto encodedTxData = tx->encode();
             auto txData = std::make_shared<bytes>(encodedTxData.begin(), encodedTxData.end());
             txpool->asyncSubmit(

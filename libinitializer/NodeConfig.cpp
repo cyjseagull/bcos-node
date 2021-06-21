@@ -50,6 +50,7 @@ void NodeConfig::loadConfig(
     loadConsensusConfig(_pt);
     loadStorageConfig(_pt);
     loadLedgerConfig(_genesisConfig);
+    loadExecutorConfig(_pt);
 }
 
 // load the txpool related params
@@ -244,4 +245,10 @@ void NodeConfig::generateGenesisData()
     m_genesisData = s.str();
     NodeConfig_LOG(INFO) << LOG_BADGE("generateGenesisData")
                          << LOG_KV("genesisData", m_genesisData);
+}
+
+void NodeConfig::loadExecutorConfig(boost::property_tree::ptree const& _pt)
+{
+    m_isWasm = _pt.get<bool>("executor.is_wasm", false);
+    NodeConfig_LOG(INFO) << LOG_DESC("loadExecutorConfig") << LOG_KV("isWasm", m_isWasm);
 }

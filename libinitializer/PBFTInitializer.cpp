@@ -108,6 +108,34 @@ TxPoolFactory::Ptr PBFTInitializer::createTxPool(NodeConfig::Ptr _nodeConfig,
                                          << LOG_KV("error", boost::diagnostic_information(e));
             }
         });
+
+    _networkInitializer->registerGetNodeIDsDispatcher(
+        ModuleID::TxsSync, [weakTxPool](std::shared_ptr<const NodeIDs> _nodeIDs,
+                               bcos::front::ReceiveMsgFunc _receiveMsgCallback) {
+            try
+            {
+                auto txpool = weakTxPool.lock();
+                if (!txpool)
+                {
+                    return;
+                }
+                if (!_nodeIDs || _nodeIDs->empty())
+                {
+                    return;
+                }
+                auto nodeIdSet = NodeIDSet(_nodeIDs->begin(), _nodeIDs->end());
+                txpool->notifyConnectedNodes(nodeIdSet, _receiveMsgCallback);
+                INITIALIZER_LOG(DEBUG) << LOG_DESC("notifyConnectedNodes")
+                                       << LOG_KV("connectedNodeSize", nodeIdSet.size());
+            }
+            catch (std::exception const& e)
+            {
+                INITIALIZER_LOG(WARNING)
+                    << LOG_DESC("call TxPool notifyConnectedNodes dispatcher exception")
+                    << LOG_KV("error", boost::diagnostic_information(e));
+            }
+        });
+
     return txpoolFactory;
 }
 

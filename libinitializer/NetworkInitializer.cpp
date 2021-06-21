@@ -105,3 +105,11 @@ void NetworkInitializer::registerMsgDispatcher(ModuleID _moduleID,
 {
     m_frontService->registerModuleMessageDispatcher(_moduleID, _dispatcher);
 }
+
+void NetworkInitializer::registerGetNodeIDsDispatcher(ModuleID _moduleID,
+    std::function<void(std::shared_ptr<const bcos::crypto::NodeIDs> _nodeIDs,
+        bcos::front::ReceiveMsgFunc _receiveMsgCallback)>
+        _dispatcher)
+{
+    m_frontService->registerModuleNodeIDsDispatcher(_moduleID, _dispatcher);
+}

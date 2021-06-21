@@ -19,8 +19,8 @@
  * @date 2021-06-11
  */
 #include "Initializer.h"
+#include "DispatcherInitializer.h"
 #include "libinitializer/NodeConfig.h"
-#include <bcos-framework/testutils/faker/FakeDispatcher.h>
 
 using namespace bcos;
 using namespace bcos::initializer;
@@ -61,17 +61,19 @@ void Initializer::init(std::string const& _configFilePath, std::string const& _g
         m_ledgerInitializer->init(
             m_protocolInitializer->blockFactory(), storageInitializer->storage(), m_nodeConfig);
 
-        // init the dispatcher(TODO: modify the dispatcher to the real dispatcher)
-        auto dispatcher = std::make_shared<bcos::test::FakeDispatcher>(
-            m_ledgerInitializer->ledger(), storageInitializer->storage(),
-            m_protocolInitializer->cryptoSuite(), m_protocolInitializer->blockFactory());
+        // init the dispatcher
+        auto dispatcherInitializer = std::make_shared<DispatcherInitializer>();
+        dispatcherInitializer->init(m_nodeConfig, m_protocolInitializer,
+            m_ledgerInitializer->ledger(), storageInitializer->storage());
 
         // init the pbft related modules
         m_pbftInitializer = std::make_shared<PBFTInitializer>();
         m_pbftInitializer->init(m_nodeConfig, m_protocolInitializer, m_networkInitializer,
-            m_ledgerInitializer->ledger(), dispatcher, storageInitializer->storage());
+            m_ledgerInitializer->ledger(), dispatcherInitializer->dispatcher(),
+            storageInitializer->storage());
 
-        dispatcher->setTxPool(m_pbftInitializer->txpool());
+        dispatcherInitializer->dispatcher()->init(m_pbftInitializer->txpool());
+        dispatcherInitializer->dispatcher()->start();
     }
     catch (std::exception const& e)
     {

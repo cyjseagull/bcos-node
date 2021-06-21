@@ -23,6 +23,7 @@
 #include "libinitializer/LedgerInitializer.h"
 #include "libinitializer/NetworkInitializer.h"
 #include "libinitializer/PBFTInitializer.h"
+#include "libinitializer/ProtocolInitializer.h"
 #include "libinitializer/StorageInitializer.h"
 #include <bcos-framework/libutilities/BoostLogInitializer.h>
 #include <memory>

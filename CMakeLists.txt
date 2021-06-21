@@ -27,7 +27,7 @@ endif()
 include(FetchContent)
 set(BCOS_CMAKE_SCRIPTS_DIR ${CMAKE_CURRENT_BINARY_DIR}/bcos-cmake-scripts)
 FetchContent_Declare(bcos-cmake-scripts
-    GIT_REPOSITORY https://${URL_BASE}/FISCO-BCOS/bcos-cmake-scripts.git
+    GIT_REPOSITORY https://${URL_BASE}/cyjseagull/bcos-cmake-scripts.git
     GIT_TAG dev
     SOURCE_DIR ${BCOS_CMAKE_SCRIPTS_DIR}
 )
@@ -39,8 +39,8 @@ list(APPEND CMAKE_MODULE_PATH ${BCOS_NODE_CMAKE_DIR})
 #init hunter
 include(HunterGate)
 HunterGate(
-    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/67ea989d75ca1560d6f3139dacda8da1dad0f978.tar.gz"
-    SHA1 "50919176ffd124cdc9a75f258e104a600b8d0368"
+    URL "https://${URL_BASE}/FISCO-BCOS/hunter/archive/1742f93f5bbc39e1c7916cbc7e8907e13d4373ad.tar.gz"
+    SHA1 "1f62a44868c0996812279f960d5ded43eed98527"
     FILEPATH "${BCOS_NODE_CMAKE_DIR}/config.cmake"
 )
 project(bcos-node VERSION "3.0.0")
@@ -67,6 +67,8 @@ include(InstallBcosLedgerDependencies)
 include(InstallBcosSyncDependencies)
 include(InstallBcosFrontDependencies)
 include(InstallBcosGateWayDependencies)
+include(InstallBcosDispatcherDependencies)
+include(InstallBcosExecutorDependencies)
 
 # copy .clang-format into the project path
 include(CopyClangFormat)
